@@ -23,21 +23,12 @@ public class ProductService {
     public Product findById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
-    public Product addProduct(Product product,Long userId) {
-        User user =userRepository.findById(userId).orElse(null);
-
-       if(!user.isAdmin()) {
-           return null;
-       }
+    public Product addProduct(Product product) {
         return productRepository.save(product);
     }
     public void deleteProduct(Long productId,Long userId) {
         User user =userRepository.findById(userId).orElse(null);
-
-        if(!user.isAdmin()){
-            return;
-        }
             Product product = productRepository.findById(productId).orElse(null);
             productRepository.delete(product);
-        }
+    }
 }
