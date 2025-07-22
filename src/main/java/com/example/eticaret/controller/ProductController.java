@@ -1,5 +1,6 @@
 package com.example.eticaret.controller;
 
+import com.example.eticaret.dto.ProductDto;
 import com.example.eticaret.model.Product;
 import com.example.eticaret.service.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +19,17 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody Product product, @RequestParam Long userId) {
-        Product saved = productService.addProduct(product, userId);
+    @PostMapping("/addProduct")
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+        Product saved = productService.addProduct(product);
         return ResponseEntity.ok(saved);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteProduct{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @RequestParam Long userId) {
         productService.deleteProduct(id, userId);
         return ResponseEntity.noContent().build();
