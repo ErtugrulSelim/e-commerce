@@ -1,7 +1,6 @@
 package com.example.eticaret.dto;
 
 import com.example.eticaret.Enum.Category;
-import jakarta.persistence.Entity;
 import lombok.*;
 
 @Getter

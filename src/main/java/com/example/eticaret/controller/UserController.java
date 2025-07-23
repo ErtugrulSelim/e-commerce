@@ -23,6 +23,7 @@ public class UserController {
     }
     @GetMapping
     public List<UserDto> getAllUsers() {
+
         return userService.getAllUsers();
     }
     @PostMapping ("/register")
@@ -32,11 +33,18 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
+
         return userService.login(user);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteBook(@PathVariable Long id) {
+
         userService.deleteById(id);
+    }
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        User saved = userService.update(user);
+        return ResponseEntity.ok(saved);
     }
     //    @PostMapping("/register")
 //    public String register(@RequestBody User user) {

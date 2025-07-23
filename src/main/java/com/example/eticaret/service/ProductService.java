@@ -31,14 +31,18 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
     public Product findById(Long id) {
+
         return productRepository.findById(id).orElse(null);
     }
     public Product addProduct(Product product) {
+
         return productRepository.save(product);
     }
-    public void deleteProduct(Long productId,Long userId) {
-        User user =userRepository.findById(userId).orElse(null);
+    public void deleteProduct(Long productId) {
             Product product = productRepository.findById(productId).orElse(null);
             productRepository.delete(product);
+    }
+    public Product updateProduct(Product product) {
+      return  productRepository.save(product);
     }
 }

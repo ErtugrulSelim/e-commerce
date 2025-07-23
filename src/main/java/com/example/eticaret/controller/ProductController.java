@@ -23,16 +23,21 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @PostMapping("/addProduct")
+    @PostMapping("/add")
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
         Product saved = productService.addProduct(product);
         return ResponseEntity.ok(saved);
     }
 
-    @DeleteMapping("/deleteProduct{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @RequestParam Long userId) {
-        productService.deleteProduct(id, userId);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+    @PutMapping
+    public ResponseEntity<?> updateProduct(@RequestBody Product product) {
+        Product saved = productService.updateProduct(product);
+        return ResponseEntity.ok(saved);
     }
 }
 

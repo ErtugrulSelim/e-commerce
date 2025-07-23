@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Setter
 @Getter
@@ -27,6 +26,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private boolean isAdmin;
+    @OneToOne
+    private Card card;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Collection<? extends GrantedAuthority> getAuthorities() {

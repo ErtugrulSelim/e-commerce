@@ -37,6 +37,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             token = authorizationHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(token);
+
             } catch (Exception e) {
                 logger.error("JWT token parsing failed: " + e.getMessage());
             }

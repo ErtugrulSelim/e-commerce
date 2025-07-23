@@ -16,7 +16,6 @@ public class Product {
     private Long id;
     private Category category;
     private String name;
-    private int count;
     @Column(name = "price")
     private Integer price;
 

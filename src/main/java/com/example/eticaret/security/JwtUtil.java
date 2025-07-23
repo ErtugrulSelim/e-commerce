@@ -17,6 +17,7 @@ public class JwtUtil {
     static SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public static String extractUsername(String token) {
+
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -26,7 +27,14 @@ public class JwtUtil {
     }
 
     private static Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .setSigningKey(key)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        return Long.parseLong(claims.getId());
     }
 
     public String generateToken(User user) {
@@ -34,6 +42,7 @@ public class JwtUtil {
         claims.put("isAdmin", user.isAdmin());
         return Jwts.builder()
                 .setClaims(claims)
+                .setId(String.valueOf(user.getId()))
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*60))

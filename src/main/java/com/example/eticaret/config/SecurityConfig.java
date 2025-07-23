@@ -4,6 +4,10 @@ import com.example.eticaret.security.JwtTokenFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -26,6 +30,18 @@ public class SecurityConfig {
     public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
     }
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role("ADMIN").implies("USER")
+                .build();
+    }
+    @Bean
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy);
+        return expressionHandler;
+    }
 
     @Bean
     protected DefaultSecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,9 +49,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/products/**").hasRole("ADMIN")
+                        .requestMatchers("/api/products/**","/api/users/delete/").hasRole("ADMIN")
                         .requestMatchers("/api/products/addProduct","/api/products/addProduct").hasRole("ADMIN")
-                        .requestMatchers("/api/orders/**").hasRole("USER")
+                        .requestMatchers("/api/card/**").hasRole("USER")
                         .anyRequest().authenticated()
                 ).sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -43,7 +59,8 @@ public class SecurityConfig {
         return http.build();
     }
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManagerBean
+            (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
     @Bean

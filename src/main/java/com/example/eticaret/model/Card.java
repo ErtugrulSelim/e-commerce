@@ -8,14 +8,14 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table(name="orders")
+@Table(name="card")
 @NoArgsConstructor
 
-public class Order {
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @OneToOne
     private User user;
     @ManyToMany
     private List<Product> products ;
