@@ -30,10 +30,6 @@ public class ProductService {
                 return dto;
         }).collect(Collectors.toList());
     }
-    public Product findById(Long id) {
-
-        return productRepository.findById(id).orElse(null);
-    }
     public Product addProduct(Product product) {
 
         return productRepository.save(product);

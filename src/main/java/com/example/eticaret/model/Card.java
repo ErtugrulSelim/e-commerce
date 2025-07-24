@@ -17,6 +17,6 @@ public class Card {
     private Long id;
     @OneToOne
     private User user;
-    @ManyToMany
-    private List<Product> products ;
+    @OneToMany
+    private List<CardItem> cardItems;
 }

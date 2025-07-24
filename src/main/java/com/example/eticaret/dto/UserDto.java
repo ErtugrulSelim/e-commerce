@@ -2,11 +2,7 @@ package com.example.eticaret.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-
+@Data
 public class UserDto {
     private String id;
     private String username;

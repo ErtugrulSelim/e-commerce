@@ -1,6 +1,7 @@
 package com.example.eticaret.controller;
 
 import com.example.eticaret.model.Card;
+import com.example.eticaret.model.CardItem;
 import com.example.eticaret.service.CardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,27 +13,21 @@ import java.util.List;
 public class CardController {
     private final CardService cardService;
     public CardController(CardService cardService) {
-
         this.cardService = cardService;
     }
     @GetMapping
-    public List<Card> getAllProductsfromCards() {
-        return cardService.getAllProductsfromCards();
+    public List<CardItem> getCardItems() {
+        return cardService.getCardItems();
     }
-    @PostMapping("/{productId}")
-        public ResponseEntity<String> placeCard(@PathVariable long productId) {
-        String saved = cardService.createCard(productId);
-        return ResponseEntity.ok(saved);
+    @PostMapping("/add")
+        public void addToCard(@RequestParam long productId, @RequestParam int quantity) {
+        cardService.addToCard(productId, quantity);
     }
-
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<String> deleteCard(@PathVariable long productId) {
-        String saved = cardService.deleteCard(productId);
+    @DeleteMapping("/deleteProduct")
+    public ResponseEntity<String> deleteProductfromCard(@RequestParam long productId, @RequestParam int quantity) {
+        cardService.deleteProductfromCard(productId, quantity);
         return ResponseEntity.ok("Card deleted");
     }
-//        public ResponseEntity<String> deleteOrder(@PathVariable long productId) {
-//        return ResponseEntity.ok("Card deleted successfully");
-//    }
 
 }
 

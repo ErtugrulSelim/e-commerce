@@ -34,10 +34,10 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody Product product) {
-        Product saved = productService.updateProduct(product);
-        return ResponseEntity.ok(saved);
+        Product update = productService.updateProduct(product);
+        return ResponseEntity.ok(update);
     }
 }
 

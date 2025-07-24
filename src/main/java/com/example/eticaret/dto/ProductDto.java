@@ -3,10 +3,7 @@ package com.example.eticaret.dto;
 import com.example.eticaret.Enum.Category;
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 
 public class ProductDto {
     private String id;
