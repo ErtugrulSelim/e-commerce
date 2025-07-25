@@ -20,5 +20,4 @@ public class Product {
     private Integer price;
     @Column(name = "stock")
     private Integer stock;
-
 }
