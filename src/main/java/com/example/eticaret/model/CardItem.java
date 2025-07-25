@@ -1,5 +1,6 @@
 package com.example.eticaret.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class CardItem {
     private int quantity;
 
     @ManyToOne
+    @JsonBackReference
     private Card card;
 }
     

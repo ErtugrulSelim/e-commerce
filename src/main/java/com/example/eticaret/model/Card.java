@@ -1,5 +1,6 @@
 package com.example.eticaret.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,5 +19,8 @@ public class Card {
     @OneToOne
     private User user;
     @OneToMany
+    @JsonManagedReference
     private List<CardItem> cardItems;
+    @OneToOne
+    Payment payment;
 }

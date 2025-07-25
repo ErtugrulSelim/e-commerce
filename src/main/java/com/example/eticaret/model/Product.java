@@ -18,4 +18,7 @@ public class Product {
     private String name;
     @Column(name = "price")
     private Integer price;
+    @Column(name = "stock")
+    private Integer stock;
+
 }

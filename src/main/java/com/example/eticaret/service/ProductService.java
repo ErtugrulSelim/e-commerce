@@ -1,9 +1,8 @@
 package com.example.eticaret.service;
 
+import com.example.eticaret.Enum.Category;
 import com.example.eticaret.dto.ProductDto;
-import com.example.eticaret.model.User;
 import com.example.eticaret.model.Product;
-import com.example.eticaret.repository.UserRepository;
 import com.example.eticaret.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,17 +17,24 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private ProductRepository productRepository;
-    private UserRepository userRepository;
 
-    public List<ProductDto> getAllProducts() {
+    public List<ProductDto> getMappingProductDto() {
         List<Product> products = productRepository.findAll();
         return products.stream().map(product ->{
             ProductDto dto = new ProductDto();
-                dto.setId(String.valueOf(product.getId()));
-                dto.setName(product.getName());
-                dto.setPrice(product.getPrice());
-                return dto;
+            dto.setName(product.getName());
+            dto.setPrice(product.getPrice());
+            dto.setCategory(product.getCategory());
+            dto.setStock(product.getStock());
+            return dto;
         }).collect(Collectors.toList());
+    }
+    public List<ProductDto> getAllProducts() {
+        return getMappingProductDto();
+    }
+    public List<ProductDto> getCategoryProduct(Category category) {
+        return getMappingProductDto().stream().filter(product ->
+                product.getCategory().equals(category)).collect(Collectors.toList());
     }
     public Product addProduct(Product product) {
 
@@ -41,4 +47,5 @@ public class ProductService {
     public Product updateProduct(Product product) {
       return  productRepository.save(product);
     }
+
 }

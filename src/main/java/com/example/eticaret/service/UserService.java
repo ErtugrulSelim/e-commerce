@@ -34,7 +34,6 @@ public class UserService {
         List<User> users = userRepository.findAll();
         return users.stream().map(user -> {
             UserDto dto = new UserDto();
-            dto.setId(String.valueOf(user.getId()));
             dto.setUsername(user.getUsername());
             dto.setEmail(user.getEmail());
             return dto;
@@ -81,7 +80,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    //    public String register(User user) {
+//    public String register(User user) {
 //        userRepository.save(user);
 //        return "User registered successfully";
 //    }

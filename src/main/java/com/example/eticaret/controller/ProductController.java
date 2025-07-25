@@ -1,5 +1,6 @@
 package com.example.eticaret.controller;
 
+import com.example.eticaret.Enum.Category;
 import com.example.eticaret.dto.ProductDto;
 import com.example.eticaret.model.Product;
 import com.example.eticaret.service.ProductService;
@@ -15,11 +16,16 @@ public class ProductController {
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
+
         this.productService = productService;
     }
-
+    @GetMapping("/{category}")
+    public List<ProductDto> getProducts(@PathVariable String category) {
+        return productService.getCategoryProduct(Category.valueOf(category));
+    }
     @GetMapping
     public List<ProductDto> getAllProducts() {
+
         return productService.getAllProducts();
     }
 
