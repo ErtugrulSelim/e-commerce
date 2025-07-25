@@ -47,6 +47,8 @@ public class PaymentService {
         Card card = cardRepository.findByUser(user).orElseThrow();
         List<CardItem> cardItem = cardItemRepository.findByCard(card);
 
+
+
     }
 
 }
