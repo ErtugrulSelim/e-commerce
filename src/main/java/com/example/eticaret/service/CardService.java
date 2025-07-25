@@ -30,6 +30,9 @@ public class CardService {
     private ProductRepository productRepository;
     private CardItemRepository cardItemRepository;
 
+    public void GetSets() {
+
+    }
     public List<CardItemDto> getMappingCardItemDto() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -107,7 +110,8 @@ public class CardService {
             Optional<CardItem> sameProductId = cardItem.stream()
                     .filter(item -> item.getProduct().getId().equals(productId))
                     .findFirst();
-            if(sameProductId.isPresent() && sameProductId.get().getQuantity() == quantity) {
+            if(sameProductId.isPresent()
+                    && sameProductId.get().getQuantity() <= quantity) {
                 CardItem exactCardItem = sameProductId.get();
                 card.getCardItems().remove(exactCardItem);
                 cardItemRepository.delete(exactCardItem);

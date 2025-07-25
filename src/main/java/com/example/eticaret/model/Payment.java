@@ -14,7 +14,6 @@ import java.util.Date;
 public class Payment {
     @Id
     private Long id;
-    private Date date;
     private boolean isSuccess;
     private boolean isRequest;
     @OneToOne
