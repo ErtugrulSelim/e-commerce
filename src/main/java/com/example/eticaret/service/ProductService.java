@@ -30,6 +30,7 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
     public List<ProductDto> getAllProducts() {
+
         return getMappingProductDto();
     }
     public List<ProductDto> getCategoryProduct(Category category) {
@@ -45,7 +46,8 @@ public class ProductService {
             productRepository.delete(product);
     }
     public Product updateProduct(Product product) {
-      return  productRepository.save(product);
+
+        return  productRepository.save(product);
     }
 
 }

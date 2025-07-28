@@ -30,9 +30,6 @@ public class CardService {
     private ProductRepository productRepository;
     private CardItemRepository cardItemRepository;
 
-    public void GetSets() {
-
-    }
     public List<CardItemDto> getMappingCardItemDto() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -116,10 +113,13 @@ public class CardService {
                 card.getCardItems().remove(exactCardItem);
                 cardItemRepository.delete(exactCardItem);
             }
-            else {
+            else if(sameProductId.isPresent()) {
                 CardItem exactCardItem = sameProductId.get();
                 exactCardItem.setQuantity(exactCardItem.getQuantity()-quantity);
                 cardItemRepository.save(exactCardItem);
+            }
+            else {
+                throw new RuntimeException("There is no product that name ");
             }
 
         }

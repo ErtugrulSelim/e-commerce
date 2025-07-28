@@ -39,12 +39,6 @@ public class UserService {
             return dto;
         }).collect(Collectors.toList());
     }
-
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
-    }
-
-
     public ResponseEntity<?> register(User user) {
         try {
             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
@@ -75,6 +69,9 @@ public class UserService {
             return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
 
+    }
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
     public User update(User user) {
         return userRepository.save(user);

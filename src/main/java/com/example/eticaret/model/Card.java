@@ -21,6 +21,4 @@ public class Card {
     @OneToMany
     @JsonManagedReference
     private List<CardItem> cardItems;
-    @OneToOne
-    Payment payment;
 }

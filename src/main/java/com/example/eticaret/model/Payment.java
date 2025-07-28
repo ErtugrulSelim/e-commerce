@@ -1,21 +1,26 @@
 package com.example.eticaret.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.*;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
+@Table(name="payments")
 @NoArgsConstructor
+@AllArgsConstructor
 
 public class Payment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private boolean isSuccess;
-    private boolean isRequest;
-    @OneToOne
+    @ManyToOne
+    @JsonBackReference
+    private Product product;
+    private int quantity;
+    @ManyToOne
+    @JsonBackReference
     private Card card;
 }

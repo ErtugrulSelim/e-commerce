@@ -32,10 +32,6 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
-    public Long extractUserId(String token) {
-        Claims claims = extractAllClaims(token);
-        return Long.parseLong(claims.getId());
-    }
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();

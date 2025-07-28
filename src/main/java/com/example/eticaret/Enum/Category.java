@@ -7,5 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public enum Category {
     Electronic,
-    Furniture
+    Furniture,
+    Spor,
+    Games
 }
