@@ -1,5 +1,6 @@
 package com.example.eticaret.service;
 
+import com.example.eticaret.exceptions.AlreadyExistException;
 import com.example.eticaret.model.User;
 import com.example.eticaret.dto.UserDto;
 import com.example.eticaret.repository.UserRepository;
@@ -10,10 +11,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.example.eticaret.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
-
 
 
 import java.util.List;
@@ -30,69 +32,54 @@ public class UserService {
 
     private UserRepository userRepository;
 
+    private UserDto convertoDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        return userDto;
+    }
+
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(user -> {
-            UserDto dto = new UserDto();
-            dto.setUsername(user.getUsername());
-            dto.setEmail(user.getEmail());
-            return dto;
-        }).collect(Collectors.toList());
+        return users.stream().map(this::convertoDto)
+                .collect(Collectors.toList());
     }
-    public ResponseEntity<?> register(User user) {
-        try {
-            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-                return new ResponseEntity<>("User already exist", HttpStatus.CONFLICT);
-            }
-            userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    public ResponseEntity<String> register(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new AlreadyExistException("User already exist");
         }
+        userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    public ResponseEntity<?> login(User user) {
+    public ResponseEntity<String> login(User user) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
             if (optionalUser.isEmpty()) {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                throw new UsernameNotFoundException("User not found");
             }
             User dbuser = optionalUser.get();
 
             String token = jwtUtil.generateToken(dbuser);
             return new ResponseEntity<>(token, HttpStatus.OK);
-        }
-        catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             System.out.println("Authentication başarısız: " + e.getMessage());
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+            throw new UsernameNotFoundException("Invalid username or password");
         }
-
     }
-    public void deleteById(Long id) {
+
+    public ResponseEntity<String> deleteById(Long id) {
         userRepository.deleteById(id);
-    }
-    public User update(User user) {
-        return userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    public String register(User user) {
-//        userRepository.save(user);
-//        return "User registered successfully";
-//    }
-//
-//    public String login(User user) {
-//        Optional<User> foundUser = userRepository.findByUsername(user.getUsername());
-//        if (foundUser.isEmpty()) {
-//            throw new RuntimeException("Kullanıcı bulunamadı!");
-//        }
-//        User dbUser = foundUser.get();
-//        if (!user.getPassword().equals(dbUser.getPassword())) {
-//            throw new RuntimeException("Şifre hatalı!");
-//        } else {
-//            return null;
-//        }
-//
-//    }
+    public ResponseEntity<String> update(User user) {
+        userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
+

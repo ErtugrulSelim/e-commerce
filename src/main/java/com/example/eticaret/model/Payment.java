@@ -2,12 +2,13 @@ package com.example.eticaret.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import lombok.*;
 
 @Entity
 @Getter
 @Setter
-@Table(name="payments")
+@Table(name = "payments")
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -15,12 +16,13 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean isSuccess;
     @ManyToOne
     @JsonBackReference
     private Product product;
+    @Max(200)
     private int quantity;
     @ManyToOne
     @JsonBackReference
-    private Card card;
+    private Cart cart;
+    private boolean isSuccess;
 }

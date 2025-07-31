@@ -2,12 +2,12 @@ package com.example.eticaret.controller;
 
 import com.example.eticaret.dto.UserDto;
 import com.example.eticaret.model.User;
-import com.example.eticaret.security.JwtUtil;
 import com.example.eticaret.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -19,38 +19,30 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping
-    public List<UserDto> getAllUsers() {
 
+    @GetMapping
+    public List<UserDto> getAllUsers()
+    {
         return userService.getAllUsers();
     }
-    @PostMapping ("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody User user) {
         return userService.register(user);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-
+    public ResponseEntity<String> login(@Valid @RequestBody User user) {
         return userService.login(user);
     }
-    @DeleteMapping("/delete/{id}")
-    public void deleteBook(@PathVariable Long id) {
 
-        userService.deleteById(id);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteBook(@PathVariable Long id) {
+       return userService.deleteById(id);
     }
+
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
-        User saved = userService.update(user);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<String> updateUser(@Valid @RequestBody User user) {
+        return userService.update(user);
     }
-    //    @PostMapping("/register")
-//    public String register(@RequestBody User user) {
-//        return userService.register(user);
-//    }
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody User user) {
-//        String user1 = userService.login(user);
-//        return ResponseEntity.ok(user1);
-//     }
 }

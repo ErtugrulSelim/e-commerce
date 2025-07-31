@@ -18,36 +18,41 @@ public class ProductService {
 
     private ProductRepository productRepository;
 
-    public List<ProductDto> getMappingProductDto() {
-        List<Product> products = productRepository.findAll();
-        return products.stream().map(product ->{
-            ProductDto dto = new ProductDto();
-            dto.setName(product.getName());
-            dto.setPrice(product.getPrice());
-            dto.setCategory(product.getCategory());
-            dto.setStock(product.getStock());
-            return dto;
-        }).collect(Collectors.toList());
+    public ProductDto convertToDto(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setCategory(product.getCategory());
+        return dto;
     }
-    public List<ProductDto> getAllProducts() {
 
-        return getMappingProductDto();
+    private List<ProductDto> getAllProductDtos() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
+
+    public List<ProductDto> getAllProducts() {
+        return getAllProductDtos();
+    }
+
     public List<ProductDto> getCategoryProduct(Category category) {
-        return getMappingProductDto().stream().filter(product ->
+        return getAllProducts().stream().filter(product ->
                 product.getCategory().equals(category)).collect(Collectors.toList());
     }
-    public Product addProduct(Product product) {
 
+    public Product addProduct(Product product) {
         return productRepository.save(product);
     }
-    public void deleteProduct(Long productId) {
-            Product product = productRepository.findById(productId).orElse(null);
-            productRepository.delete(product);
-    }
-    public Product updateProduct(Product product) {
 
-        return  productRepository.save(product);
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        productRepository.delete(product);
+    }
+
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
     }
 
 }

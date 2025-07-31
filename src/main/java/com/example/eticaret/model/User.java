@@ -2,6 +2,8 @@ package com.example.eticaret.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +15,7 @@ import java.util.Collections;
 @Setter
 @Getter
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @NoArgsConstructor
 
 public class User implements UserDetails {
@@ -21,22 +23,28 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
+    @NotNull
     private String username;
-    @Column (unique = true)
+    @Column(unique = true)
+    @Email
     private String email;
     private String password;
     private boolean isAdmin;
     @OneToOne
-    private Card card;
+    private Cart cart;
+    @Column()
+    private long money;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (isAdmin()) {
             return Collections.singleton((new SimpleGrantedAuthority("ROLE_ADMIN")));
         } else {
-            return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")) ;
+            return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
-
 }
+
+// global exception handler, @Trsancational, spring.validation, methodlara bölmeni clean code, sonar cube
+// security config
 

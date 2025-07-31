@@ -30,12 +30,14 @@ public class SecurityConfig {
     public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
     }
+
     @Bean
     public RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role("ADMIN").implies("USER")
                 .build();
     }
+
     @Bean
     public MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
@@ -48,23 +50,26 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/products/**","/api/users/delete/").hasRole("ADMIN")
-                        .requestMatchers("/api/products/addProduct","/api/products/addProduct").hasRole("ADMIN")
+                        .requestMatchers("/api/users/login","/api/login/register").permitAll()
+                        .requestMatchers("/api/products/**", "/api/users/delete/","/api/products/addProduct").hasRole("ADMIN")
                         .requestMatchers("/api/card/**").hasRole("USER")
+                        .requestMatchers("/api/payment/**").hasRole("USER")
                         .anyRequest().authenticated()
                 ).sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     public AuthenticationManager authenticationManagerBean
             (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return NoOpPasswordEncoder.getInstance();
     }
 }

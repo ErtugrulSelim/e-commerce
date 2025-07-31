@@ -1,15 +1,15 @@
 package com.example.eticaret.dto;
 
-import com.example.eticaret.model.Card;
-import com.example.eticaret.model.Product;
+import com.example.eticaret.model.Cart;
+import com.example.eticaret.dto.ProductDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 @Data
 
-public class CardItemDto {
-    private Product product;
+public class CartItemDto {
+    private ProductDto product;
     private int quantity;
     @JsonBackReference
-    private Card card;
+    private Cart cart;
 }

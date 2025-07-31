@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import io.jsonwebtoken.security.Keys;
+
 import javax.crypto.SecretKey;
 
 @Component
@@ -41,8 +42,8 @@ public class JwtUtil {
                 .setId(String.valueOf(user.getId()))
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60))
-                .signWith(SignatureAlgorithm.HS256,key)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 

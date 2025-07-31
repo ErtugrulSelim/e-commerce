@@ -4,6 +4,7 @@ import com.example.eticaret.Enum.Category;
 import com.example.eticaret.dto.ProductDto;
 import com.example.eticaret.model.Product;
 import com.example.eticaret.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,12 @@ public class ProductController {
 
         this.productService = productService;
     }
+
     @GetMapping("/{category}")
     public List<ProductDto> getProducts(@PathVariable String category) {
         return productService.getCategoryProduct(Category.valueOf(category));
     }
+
     @GetMapping
     public List<ProductDto> getAllProducts() {
 
@@ -30,7 +33,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@Valid @RequestBody Product product) {
         Product saved = productService.addProduct(product);
         return ResponseEntity.ok(saved);
     }
@@ -40,8 +43,9 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping("/update")
-    public ResponseEntity<?> updateProduct(@RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product) {
         Product update = productService.updateProduct(product);
         return ResponseEntity.ok(update);
     }

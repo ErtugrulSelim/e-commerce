@@ -9,5 +9,4 @@ public class ProductDto {
     private String name;
     private Category category;
     private Integer price;
-    private Integer stock;
 }
