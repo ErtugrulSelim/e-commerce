@@ -6,8 +6,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.naming.AuthenticationException;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler({AlreadyExistException.class})
@@ -25,7 +23,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handleBadCredentials(BadCredentialsException ex) {
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid username or password");

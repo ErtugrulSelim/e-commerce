@@ -10,7 +10,6 @@ import com.example.eticaret.model.Product;
 import com.example.eticaret.model.User;
 import com.example.eticaret.repository.CartItemRepository;
 import com.example.eticaret.repository.CartRepository;
-import com.example.eticaret.repository.UserRepository;
 import com.example.eticaret.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
