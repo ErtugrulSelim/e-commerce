@@ -50,8 +50,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/users/login","/api/login/register").permitAll()
-                        .requestMatchers("/api/products/**", "/api/users/delete/","/api/products/addProduct").hasRole("ADMIN")
+                        .requestMatchers("/api/users/login", "/api/login/register").permitAll()
+                        .requestMatchers("/api/products/", "/api/users/delete/", "/api/products/addProduct").hasRole("ADMIN")
+                        .requestMatchers("/api/products", "/api/products/{category}").hasRole("USER")
                         .requestMatchers("/api/card/**").hasRole("USER")
                         .requestMatchers("/api/payment/**").hasRole("USER")
                         .anyRequest().authenticated()
@@ -69,7 +70,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return NoOpPasswordEncoder.getInstance();
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +37,7 @@ public class PaymentService {
 
         return payments.stream().map(payment -> {
             PaymentDto dto = new PaymentDto();
+            dto.setId(payment.getId());
             dto.setSuccess(payment.isSuccess());
             dto.setQuantity(payment.getQuantity());
             dto.setCart(payment.getCart());
@@ -65,13 +65,13 @@ public class PaymentService {
         boolean alreadyPending = paymentRepository
                 .findByCart(cart)
                 .stream()
-                .anyMatch(p -> p.getProduct().getId() == productId);
+                .anyMatch(p -> p.getProduct().getId() == productId && !p.isSuccess());
         return alreadyPending;
     }
 
     private Boolean successStateOfPays(List<Payment> payments) {
         return payments.stream()
-                .anyMatch(payment -> payment.isSuccess());
+                .anyMatch(Payment::isSuccess);
     }
 
     private Payment createPayment(int quantity, Cart cart, Product product) {
@@ -107,21 +107,17 @@ public class PaymentService {
         List<CartItem> cartItems = cartItemRepository.findByCart(cart);
         List<Payment> payments = paymentRepository.findByCart(cart);
 
-        Set<Long> alreadyPaidProductIds = payments
-                .stream()
-                .map(p -> p.getProduct().getId())
-                .collect(Collectors.toSet());
         if (cartItems.isEmpty()) {
             throw new NotFoundException("There is no product at the cart.");
         }
         cartItems.forEach(cartItem -> {
-            if (!alreadyPaidProductIds.contains(cartItem.getProduct().getId())
-                    || successStateOfPays(payments)) {
-                createPayment(cartItem.getQuantity(), cartItem.getCart(), cartItem.getProduct());
-            } else {
-                throw new PendingException
-                        ("These products already has a pending payment." + getPendingPayments(user));
+            boolean hasPending = payments.stream()
+                    .anyMatch(p -> p.getProduct().getId() == cartItem.getProduct().getId() && !p.isSuccess());
+
+            if (hasPending) {
+                throw new PendingException("These products already have a pending payment." + getPendingPayments(user));
             }
+            createPayment(cartItem.getQuantity(), cartItem.getCart(), cartItem.getProduct());
         });
     }
 
@@ -166,11 +162,11 @@ public class PaymentService {
     }
 
     @Transactional
-    public void deletePendingPayById(User user, long productId) {
+    public void deletePendingPayById(User user, long paymentId) {
         Cart cart = getCurrentUserCart(user);
-        boolean pendingState = pendingStateOfPays(productId, cart);
+        boolean pendingState = pendingStateOfPays(paymentId, cart);
         if (pendingState) {
-            paymentRepository.deleteById(productId);
+            paymentRepository.deleteById(paymentId);
         } else {
             throw new NotFoundException("There is no pending payment at the cart.");
         }
@@ -180,13 +176,14 @@ public class PaymentService {
     public void deleteAllPendingPays(User user) {
         Cart cart = getCurrentUserCart(user);
         List<Payment> payments = paymentRepository.findByCart(cart);
-        if (!successStateOfPays(payments)) {
-            throw new NotFoundException("There is no pending payments at the cart.");
+
+        List<Payment> pendingPayments = payments.stream()
+                .filter(payment -> !payment.isSuccess())
+                .collect(Collectors.toList());
+        if (pendingPayments.isEmpty()) {
+            throw new NotFoundException("There are no pending payments in the cart.");
         }
-        for (Payment payment : payments) {
-            List<Payment> deletePendingPays = paymentRepository.getByIsSuccess((false));
-            paymentRepository.deleteAll(deletePendingPays);
-        }
+        paymentRepository.deleteAll(pendingPayments);
     }
 }
 

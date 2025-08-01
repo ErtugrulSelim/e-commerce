@@ -15,6 +15,7 @@ public class CartItem {
     private Long id;
     @ManyToOne
     private Product product;
+    @Max(value = 200,message = "The quantity have to less than 200")
     private int quantity;
     @ManyToOne
     @JsonBackReference

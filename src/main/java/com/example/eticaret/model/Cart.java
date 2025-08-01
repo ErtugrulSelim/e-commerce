@@ -22,6 +22,6 @@ public class Cart {
     private User user;
     @OneToMany
     @JsonManagedReference
-    @Size(max = 15)
+    @Size(max = 15,message = "The cart items have to less than 15")
     private List<CartItem> cartItems;
 }

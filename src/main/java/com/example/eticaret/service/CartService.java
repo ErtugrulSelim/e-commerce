@@ -29,7 +29,6 @@ public class CartService {
 
     private final ProductService productService;
     private CartRepository cartRepository;
-    private UserRepository userRepository;
     private ProductRepository productRepository;
     private CartItemRepository cartItemRepository;
 
@@ -53,7 +52,8 @@ public class CartService {
     @Transactional
     public void addToCart(User user, Long productId, int quantity) {
         Cart cart = getOrCreateCart(user);
-        Product product = productRepository.findById(productId).orElseThrow();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
 
         Optional<CartItem> existingCartItem = findCartItemByProductId(cart, productId);
 
@@ -62,6 +62,7 @@ public class CartService {
             exactCartItem.setCart(cart);
             updateCardItem(exactCartItem, quantity, product, cart);
         } else {
+            checkStock(quantity, 0, product.getStock());
             CartItem newItem = new CartItem();
             newItem.setProduct(product);
             updateCardItem(newItem, quantity, product, cart);
@@ -88,8 +89,8 @@ public class CartService {
                 .findFirst();
     }
 
-    private void checkStock(int quantity, int cartItemQuantitiy, int stock) {
-        if (stock < quantity && stock < cartItemQuantitiy) {
+    private void checkStock(int quantityToAdd, int currentQuantity, int stock) {
+        if (stock < (quantityToAdd + currentQuantity)) {
             throw new StockException("Stock exceeded.");
         }
     }
@@ -106,17 +107,18 @@ public class CartService {
         Cart cart = getCurrentUserCart(user);
         Optional<CartItem> existingCartItem = findCartItemByProductId(cart, productId);
 
-        if (existingCartItem.isPresent()
-                && existingCartItem.get().getQuantity() <= quantity) {
-            CartItem exactCartItem = existingCartItem.get();
-            cart.getCartItems().remove(exactCartItem);
-            cartItemRepository.delete(exactCartItem);
-        } else if (existingCartItem.isPresent()) {
-            CartItem exactCartItem = existingCartItem.get();
-            exactCartItem.setQuantity(exactCartItem.getQuantity() - quantity);
-            cartItemRepository.save(exactCartItem);
+        if (existingCartItem.isPresent()) {
+            CartItem cartItem = existingCartItem.get();
+            if (cartItem.getQuantity() <= quantity) {
+                cart.getCartItems().remove(cartItem);
+                cartItemRepository.delete(cartItem);
+            } else {
+                cartItem.setQuantity(cartItem.getQuantity() - quantity);
+                cartItemRepository.save(cartItem);
+            }
+            cartRepository.save(cart);
         } else {
-            throw new NotFoundException("There is no product that name.");
+            throw new NotFoundException("Product not found in cart.");
         }
     }
 

@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class PaymentDto {
+    public long id;
     public ProductDto product;
     public int quantity;
     public boolean isSuccess;

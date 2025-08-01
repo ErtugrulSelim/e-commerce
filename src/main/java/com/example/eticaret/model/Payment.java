@@ -3,6 +3,7 @@ package com.example.eticaret.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class Payment {
     @ManyToOne
     @JsonBackReference
     private Product product;
-    @Max(200)
+    @Max(value = 200,message = "The quantity have to less than 200")
     private int quantity;
     @ManyToOne
     @JsonBackReference

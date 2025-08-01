@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,23 +51,22 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    public ResponseEntity<String> login(User user) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-            if (optionalUser.isEmpty()) {
-                throw new UsernameNotFoundException("User not found");
-            }
-            User dbuser = optionalUser.get();
 
-            String token = jwtUtil.generateToken(dbuser);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        } catch (AuthenticationException e) {
-            System.out.println("Authentication başarısız: " + e.getMessage());
-            throw new UsernameNotFoundException("Invalid username or password");
+    public ResponseEntity<String> login(User user) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
         }
+
+        User dbuser = optionalUser.get();
+        String token = jwtUtil.generateToken(dbuser);
+
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     public ResponseEntity<String> deleteById(Long id) {
