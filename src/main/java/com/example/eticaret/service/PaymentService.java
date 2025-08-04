@@ -62,12 +62,12 @@ public class PaymentService {
     }
 
     private Boolean pendingStateOfPays(long productId, Cart cart) {
-        boolean alreadyPending = paymentRepository
+        return paymentRepository
                 .findByCart(cart)
                 .stream()
                 .anyMatch(p -> p.getProduct().getId() == productId && !p.isSuccess());
-        return alreadyPending;
     }
+
     private void createPayment(long quantity, Cart cart, Product product) {
         Payment payment = new Payment();
         payment.setProduct(product);
@@ -105,7 +105,7 @@ public class PaymentService {
         }
         cartItems.forEach(cartItem -> {
             boolean hasPending = payments.stream()
-                    .anyMatch(p -> p.getProduct().getId() == cartItem.getProduct().getId() && !p.isSuccess());
+                    .anyMatch(p -> p.getProduct().getId().equals(cartItem.getProduct().getId()) && !p.isSuccess());
 
             if (hasPending) {
                 throw new PendingException("These products already have a pending payment." + getPendingPayments(user));
@@ -117,7 +117,7 @@ public class PaymentService {
     @Transactional
     public void getPayComplete(User user) {
         Cart cart = getCurrentUserCart(user);
-        List<Payment> pendingPayments = paymentRepository.getByIsSuccess(false);
+        List<Payment> pendingPayments = paymentRepository.getBySuccess(false);
 
         if (pendingPayments.isEmpty()) {
             throw new NotFoundException("There is no pending payment.");

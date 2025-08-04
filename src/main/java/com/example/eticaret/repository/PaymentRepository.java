@@ -12,5 +12,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByCart(Cart cart);
 
-    List<Payment> getByIsSuccess(boolean isSuccess);
+    List<Payment> getBySuccess(boolean isSuccess);
 }
