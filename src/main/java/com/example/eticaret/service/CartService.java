@@ -102,7 +102,7 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteProductFromCart(User user, Long productId, int quantity) {
+    public void deleteProductFromCart(User user, Long productId, long quantity) {
         Cart cart = getCurrentUserCart(user);
         Optional<CartItem> existingCartItem = findCartItemByProductId(cart, productId);
 

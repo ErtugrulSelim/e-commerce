@@ -45,7 +45,7 @@ public class JwtUtil {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(key)  // sadece Key veriyoruz
+                .signWith(key)
                 .compact();
     }
 
