@@ -8,7 +8,7 @@ import lombok.Data;
 public class PaymentDto {
     public long id;
     public ProductDto product;
-    public int quantity;
+    public long quantity;
     public boolean isSuccess;
     @JsonBackReference
     public Cart cart;

@@ -1,6 +1,7 @@
 package com.example.eticaret.service;
 
 import com.example.eticaret.exceptions.AlreadyExistException;
+import com.example.eticaret.exceptions.NotFoundException;
 import com.example.eticaret.model.User;
 import com.example.eticaret.dto.UserDto;
 import com.example.eticaret.repository.UserRepository;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.example.eticaret.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,9 +59,6 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
 
         User dbuser = optionalUser.get();
         String token = jwtUtil.generateToken(dbuser);
@@ -70,13 +67,16 @@ public class UserService {
     }
 
     public ResponseEntity<String> deleteById(Long id) {
+        if (id == null) {
+            throw new NotFoundException("Id not found");
+        }
         userRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public ResponseEntity<String> update(User user) {
-        userRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+            userRepository.save(user);
+            return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

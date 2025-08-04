@@ -68,20 +68,13 @@ public class PaymentService {
                 .anyMatch(p -> p.getProduct().getId() == productId && !p.isSuccess());
         return alreadyPending;
     }
-
-    private Boolean successStateOfPays(List<Payment> payments) {
-        return payments.stream()
-                .anyMatch(Payment::isSuccess);
-    }
-
-    private Payment createPayment(int quantity, Cart cart, Product product) {
+    private void createPayment(long quantity, Cart cart, Product product) {
         Payment payment = new Payment();
         payment.setProduct(product);
         payment.setQuantity(quantity);
         payment.setCart(cart);
         payment.setSuccess(false);
         paymentRepository.save(payment);
-        return payment;
     }
 
 
@@ -131,7 +124,7 @@ public class PaymentService {
         }
         for (Payment payment : pendingPayments) {
             Product product = payment.getProduct();
-            int quantity = payment.getQuantity();
+            long quantity = payment.getQuantity();
 
             if (product.getStock() < quantity) {
                 throw new StockException("Insufficient stock for product: " + product.getName());
@@ -149,7 +142,7 @@ public class PaymentService {
 
             List<CartItem> cartItems = cartItemRepository.findByCart(cart);
             cartItems.forEach(cartItem -> {
-                int remaining = cartItem.getQuantity() - quantity;
+                long remaining = cartItem.getQuantity() - quantity;
                 if (remaining <= 0) {
                     cart.getCartItems().remove(cartItem);
                     cartItemRepository.delete(cartItem);

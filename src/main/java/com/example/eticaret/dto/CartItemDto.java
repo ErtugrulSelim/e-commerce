@@ -9,7 +9,7 @@ import lombok.Data;
 
 public class CartItemDto {
     private ProductDto product;
-    private int quantity;
+    private long quantity;
     @JsonBackReference
     private Cart cart;
 }

@@ -49,7 +49,7 @@ public class CartService {
     }
 
     @Transactional
-    public void addToCart(User user, Long productId, int quantity) {
+    public void addToCart(User user, Long productId, long quantity) {
         Cart cart = getOrCreateCart(user);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product not found"));
@@ -88,13 +88,13 @@ public class CartService {
                 .findFirst();
     }
 
-    private void checkStock(int quantityToAdd, int currentQuantity, int stock) {
+    private void checkStock(long quantityToAdd, long currentQuantity, long stock) {
         if (stock < (quantityToAdd + currentQuantity)) {
             throw new StockException("Stock exceeded.");
         }
     }
 
-    private void updateCardItem(CartItem cartItem, int quantity, Product product, Cart cart) {
+    private void updateCardItem(CartItem cartItem, long quantity, Product product, Cart cart) {
         checkStock(quantity, cartItem.getQuantity(), product.getStock());
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
         cartItem.setCart(cart);

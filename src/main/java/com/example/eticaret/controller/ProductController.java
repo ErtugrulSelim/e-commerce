@@ -33,7 +33,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@Valid @RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@RequestBody @Valid  Product product) {
         Product saved = productService.addProduct(product);
         return ResponseEntity.ok(saved);
     }
@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid Product product) {
         Product update = productService.updateProduct(product);
         return ResponseEntity.ok(update);
     }

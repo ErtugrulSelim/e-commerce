@@ -25,5 +25,5 @@ public class Product {
     private Integer price;
     @Column(name = "stock")
     @Max(value = 10000,message = "The stock have to less 10000")
-    private int stock;
+    private long stock;
 }
