@@ -50,9 +50,9 @@ public class PaymentController {
         return ResponseEntity.ok("Payments complete.");
     }
 
-    @DeleteMapping("/delete-pending-pay-byId{productId}")
+    @DeleteMapping("/delete-pending-pay-byId/{productId}")
     public ResponseEntity<String> deletePendingPayById(@Valid @AuthenticationPrincipal User user,
-                                                       @RequestParam Long productId) {
+                                                       @PathVariable Long productId) {
         paymentService.deletePendingPayById(user, productId);
         return ResponseEntity.ok("Deleted pending payment by id " + productId);
     }

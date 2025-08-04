@@ -18,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -58,9 +57,8 @@ public class UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
-
-        User dbuser = optionalUser.get();
+        User dbuser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new NotFoundException("User not found"));
         String token = jwtUtil.generateToken(dbuser);
 
         return new ResponseEntity<>(token, HttpStatus.OK);

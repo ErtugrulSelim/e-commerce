@@ -1,6 +1,7 @@
 package com.example.eticaret.security;
 
 import com.example.eticaret.service.UserDetailsServiceImp;
+import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
@@ -37,7 +40,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             token = authorizationHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(token);
-
             } catch (Exception e) {
                 logger.error("JWT token parsing failed: " + e.getMessage());
             }
