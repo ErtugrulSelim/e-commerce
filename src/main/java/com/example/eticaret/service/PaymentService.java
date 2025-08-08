@@ -74,6 +74,7 @@ public class PaymentService {
         payment.setQuantity(quantity);
         payment.setCart(cart);
         payment.setSuccess(false);
+        payment.setUser(cart.getUser());
         paymentRepository.save(payment);
     }
 
@@ -117,7 +118,7 @@ public class PaymentService {
     @Transactional
     public void getPayComplete(User user) {
         Cart cart = getCurrentUserCart(user);
-        List<Payment> pendingPayments = paymentRepository.getBySuccess(false);
+        List<Payment> pendingPayments = paymentRepository.getByIsSuccess(false);
 
         if (pendingPayments.isEmpty()) {
             throw new NotFoundException("There is no pending payment.");

@@ -26,10 +26,11 @@ public class ProductService {
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setCategory(product.getCategory());
+        dto.setAverageRating(product.getAverageRating());
         return dto;
     }
 
-    private List<ProductDto> getAllProductDtos() {
+    private List<ProductDto> getAllProductDto() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(this::convertToDto)
@@ -37,14 +38,14 @@ public class ProductService {
     }
 
     public List<ProductDto> getAllProducts() {
-        if(getAllProductDtos().isEmpty()) {
+        if (getAllProductDto().isEmpty()) {
             throw new NotFoundException("No products found");
         }
-        return getAllProductDtos();
+        return getAllProductDto();
     }
 
     public List<ProductDto> getCategoryProduct(Category category) {
-        if(category == null) {
+        if (category == null) {
             throw new NotFoundException("No category found");
         }
         return getAllProducts().stream().filter(product ->
@@ -53,7 +54,7 @@ public class ProductService {
 
     public Product addProduct(Product product) {
         Optional<Product> newProduct = productRepository.findById(product.getId());
-         if (newProduct.isPresent()) {
+        if (newProduct.isPresent()) {
             throw new AlreadyExistException("This product already exists");
         }
         return productRepository.save(product);
@@ -67,11 +68,10 @@ public class ProductService {
 
     public Product updateProduct(Product product) {
         Optional<Product> newProduct = productRepository.findById(product.getId());
-        if(newProduct.isPresent()) {
-            product.setStock(newProduct.get().getStock()+product.getStock());
+        if (newProduct.isPresent()) {
+            product.setStock(newProduct.get().getStock() + product.getStock());
             return productRepository.save(product);
-        }
-        else {
+        } else {
             throw new NotFoundException("Product not found");
         }
     }

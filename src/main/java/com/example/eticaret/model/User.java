@@ -1,9 +1,11 @@
 package com.example.eticaret.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Setter
 @Getter
@@ -23,10 +26,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    @NotNull(message = "Please provide a username")
     private String username;
     @Column(unique = true)
-    @Email
+    @Email()
     private String email;
     private String password;
     private boolean isAdmin;
@@ -34,7 +36,6 @@ public class User implements UserDetails {
     private Cart cart;
     @Column()
     private long money;
-
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (isAdmin()) {
@@ -43,8 +44,6 @@ public class User implements UserDetails {
             return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
-}
 
-// global exception handler, @Trsancational, spring.validation, methodlara bölmeni clean code, sonar cube
-// security config
+}
 

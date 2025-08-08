@@ -12,4 +12,5 @@ public class PaymentDto {
     public boolean isSuccess;
     @JsonBackReference
     public Cart cart;
+    public UserDto user;
 }

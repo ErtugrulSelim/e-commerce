@@ -30,7 +30,7 @@ public class UserService {
 
     private UserRepository userRepository;
 
-    private UserDto convertoDto(User user) {
+    private UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
@@ -39,7 +39,7 @@ public class UserService {
 
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(this::convertoDto)
+        return users.stream().map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -52,14 +52,26 @@ public class UserService {
     }
 
     public ResponseEntity<String> login(User user) {
+        final String identifier ;
+
+        if (user.getUsername() != null && !user.getUsername().isBlank()) {
+            identifier = user.getUsername();
+        } else if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            identifier = user.getEmail();
+        } else {
+            throw new NotFoundException("Username or email required.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+                new UsernamePasswordAuthenticationToken(identifier, user.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User dbuser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        String token = jwtUtil.generateToken(dbuser);
+        User dbUser = userRepository.findByUsername(identifier)
+                .orElseGet(() -> userRepository.findByEmail(identifier)
+                        .orElseThrow(() -> new NotFoundException("User not found")));
+
+        String token = jwtUtil.generateToken(dbUser);
 
         return new ResponseEntity<>(token, HttpStatus.OK);
     }

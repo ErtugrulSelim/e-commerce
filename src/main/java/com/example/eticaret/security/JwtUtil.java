@@ -18,8 +18,10 @@ public class JwtUtil {
     static SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String extractUsername(String token) {
-
         return extractClaim(token, Claims::getSubject);
+    }
+    public String extractEmail(String token) {
+        return extractAllClaims(token).get("email").toString();
     }
 
     public  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -38,6 +40,8 @@ public class JwtUtil {
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("isAdmin", user.isAdmin());
+        claims.put("username", user.getUsername());
+        claims.put("email", user.getEmail());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -50,9 +54,11 @@ public class JwtUtil {
     }
 
 
-    public boolean validateToken(String token, String username) {
+    public boolean validateToken(String token, String identifier) {
+        String extractedUsername = extractUsername(token);
+        String extractedEmail = extractEmail(token);
 
-        return extractUsername(token).equals(username);
+        return identifier.equals(extractedUsername) || identifier.equals(extractedEmail);
     }
 
 }

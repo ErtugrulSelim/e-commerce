@@ -6,15 +6,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.example.eticaret.model.User;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImp implements UserDetailsService {
     private UserRepository userRepository;
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
+    @Override
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        Optional<User> userOpt;
 
+        if (identifier.contains("@")) {
+            userOpt = userRepository.findByEmail(identifier);
+        } else {
+            userOpt = userRepository.findByUsername(identifier);
+        }
+        User user = userOpt.orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username or email: " + identifier));
+        return user;
+    }
 }

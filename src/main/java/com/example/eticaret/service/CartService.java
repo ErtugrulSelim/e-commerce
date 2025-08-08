@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class CartService {
 
-    private final ProductService productService;
+    private ProductService productService;
     private CartRepository cartRepository;
     private ProductRepository productRepository;
     private CartItemRepository cartItemRepository;

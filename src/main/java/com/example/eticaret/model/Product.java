@@ -1,10 +1,13 @@
 package com.example.eticaret.model;
 
 import com.example.eticaret.Enum.Category;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -16,14 +19,21 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull(message = "Please provide a category")
     private Category category;
+
     @NotNull(message = "Please provide a name")
     private String name;
+
     @NotNull(message = "Please provide a price")
     @Column(name = "price")
     private Integer price;
+
     @Column(name = "stock")
     @Max(value = 10000,message = "The stock have to less 10000")
     private long stock;
+
+    @Column(name = "average_rating")
+    private float AverageRating;
 }

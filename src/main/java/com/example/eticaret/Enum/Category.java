@@ -8,6 +8,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public enum Category {
     Electronic,
     Furniture,
-    Spor,
+    Sport,
     Games
 }
