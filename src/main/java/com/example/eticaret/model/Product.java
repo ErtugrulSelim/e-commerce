@@ -1,13 +1,12 @@
 package com.example.eticaret.model;
 
 import com.example.eticaret.Enum.Category;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.List;
+
 
 @Setter
 @Getter
