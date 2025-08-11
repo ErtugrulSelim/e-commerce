@@ -31,7 +31,7 @@ public class Product {
     private Integer price;
 
     @Column(name = "stock")
-    @Max(value = 10000,message = "The stock have to less 10000")
+    @Max(value = 10000, message = "The stock have to less 10000")
     private long stock;
 
     @Column(name = "average_rating")

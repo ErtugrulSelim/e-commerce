@@ -13,10 +13,13 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private Product product;
-    @Max(value = 200,message = "The quantity have to less than 200")
+
+    @Max(value = 200, message = "The quantity have to less than 200")
     private long quantity;
+
     @ManyToOne
     @JsonBackReference
     private Cart cart;

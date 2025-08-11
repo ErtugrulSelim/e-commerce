@@ -16,7 +16,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> getByIsSuccess(boolean isSuccess);
 
-    Payment findByUser(User user);
-
     Payment findById(long paymentId);
 }

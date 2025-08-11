@@ -52,12 +52,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/users/login", "/api/login/register").permitAll()
-                        .requestMatchers("/api/products/", "/api/users/delete/", "/api/products/addProduct")
-                        .hasRole("ADMIN")
+                        .requestMatchers("/api/users/delete/", "/api/products/addProduct").hasRole("ADMIN")
                         .requestMatchers("/api/products", "/api/products/{category}").hasRole("USER")
                         .requestMatchers("/api/card/**").hasRole("USER")
                         .requestMatchers("/api/payment/**").hasRole("USER")
                         .requestMatchers("/api/mail/send").permitAll()
+                        .requestMatchers("/api/feedBack/comments/**").hasRole("USER")
                         .anyRequest().authenticated()
                 ).sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

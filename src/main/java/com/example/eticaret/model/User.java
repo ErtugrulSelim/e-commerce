@@ -25,17 +25,24 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String username;
+
     @Column(unique = true)
     @Email()
     private String email;
+
     private String password;
+
     private boolean isAdmin;
+
     @OneToOne
     private Cart cart;
+
     @Column()
     private long money;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (isAdmin()) {

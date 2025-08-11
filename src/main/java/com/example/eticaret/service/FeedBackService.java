@@ -4,12 +4,10 @@ package com.example.eticaret.service;
 import com.example.eticaret.dto.FeedBackDto;
 import com.example.eticaret.exceptions.*;
 import com.example.eticaret.model.*;
-import com.example.eticaret.repository.FeedBackRepository;
-import com.example.eticaret.repository.ProductRepository;
+import com.example.eticaret.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.example.eticaret.repository.PaymentRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,13 +38,16 @@ public class FeedBackService {
         newFeedBack.setUser(user);
         newFeedBack.setProduct(payment.getProduct());
         newFeedBack.setPayment(payment);
-        newFeedBack.setRating(1);
+        newFeedBack.setRating(3);
         return feedBackRepository.save(newFeedBack);
     }
 
     @Transactional
     public void setFeedBack(User user, FeedBackDto feedBackDto, long paymentId) {
         Payment payment = paymentRepository.findById(paymentId);
+        if (payment == null) {
+            throw new NotFoundException("Payment not found with id: " + paymentId);
+        }
         FeedBack feedBack = feedBackRepository.findByPaymentId(paymentId);
         if (feedBack != null) {
             throw new FeedBackException("You have already added a feedBack");
@@ -57,7 +58,7 @@ public class FeedBackService {
 
             feedBackRepository.save(newFeedBack);
 
-            setAverageRating(feedBack.getPayment().getId());
+            setAverageRating(newFeedBack.getProduct().getId());
         }
     }
 

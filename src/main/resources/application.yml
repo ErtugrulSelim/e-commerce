@@ -17,7 +17,7 @@ spring:
   host: smtp.gmail.com
   port: 587
   username: e.selimbark@gmail.com
-  password: jholicxymfaiabcg
+  password: ziasvmkxnmsodgkt # Gmail App Password
   properties:
    mail:
     smtp:
@@ -28,14 +28,21 @@ spring:
      ssl:
       enable: false
       trust: smtp.gmail.com
-     connectiontimeout: 10000
-     timeout: 10000
-     writetimeout: 10000
+     connectiontimeout: 30000
+     timeout: 30000
+     writetimeout: 30000
+   debug: true
+
 logging:
  level:
-   org:
-    springframework.mail: DEBUG
-    eclipse.angus.mail: DEBUG
+  root: INFO
+  org.springframework.mail: DEBUG
+  com.sun.mail: DEBUG
+java:
+ net:
+  preferIPv4Stack: true
 
-
-
+management:
+ health:
+  mail:
+   enabled: false
