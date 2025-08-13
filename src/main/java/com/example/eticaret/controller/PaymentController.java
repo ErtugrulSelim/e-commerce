@@ -35,7 +35,7 @@ public class PaymentController {
     public ResponseEntity<String> getPayProductRequest(@Valid @AuthenticationPrincipal User user,
                                                        @RequestParam Long productId, @RequestParam int quantity) {
         paymentService.getPayProductRequest(user, productId, quantity);
-        return ResponseEntity.ok("Product requested by id" + productId);
+        return ResponseEntity.ok("Product requested by id: " + productId);
     }
 
     @PostMapping
@@ -54,7 +54,7 @@ public class PaymentController {
     public ResponseEntity<String> deletePendingPayById(@Valid @AuthenticationPrincipal User user,
                                                        @PathVariable Long productId) {
         paymentService.deletePendingPayById(user, productId);
-        return ResponseEntity.ok("Deleted pending payment by id " + productId);
+        return ResponseEntity.ok("Deleted pending payment by id: " + productId);
     }
 
     @DeleteMapping("/delete-all-pending-pays")

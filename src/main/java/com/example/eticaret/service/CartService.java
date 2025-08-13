@@ -34,6 +34,7 @@ public class CartService {
     private Cart getCurrentUserCart(User user) {
         return cartRepository.findByUser(user);
     }
+
     @Transactional
     public List<CartItemDto> getMappingCartItemDto(User user) {
         Cart cart = getCurrentUserCart(user);
@@ -70,6 +71,34 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    @Transactional
+    public void deleteProductFromCart(User user, Long productId, long quantity) {
+        Cart cart = getCurrentUserCart(user);
+        Optional<CartItem> existingCartItem = findCartItemByProductId(cart, productId);
+
+        if (existingCartItem.isPresent()) {
+            CartItem cartItem = existingCartItem.get();
+            if (cartItem.getQuantity() <= quantity) {
+                cart.getCartItems().remove(cartItem);
+                cartItemRepository.delete(cartItem);
+            } else {
+                cartItem.setQuantity(cartItem.getQuantity() - quantity);
+                cartItemRepository.save(cartItem);
+            }
+            cartRepository.save(cart);
+        } else {
+            throw new NotFoundException("Product not found in cart.");
+        }
+    }
+
+    @Transactional
+    public void cleanCart(User user) {
+        Cart cart = getCurrentUserCart(user);
+        List<CartItem> cartItem = cartItemRepository.findByCart(cart);
+        cart.getCartItems().removeAll(cartItemRepository.findByCart(cart));
+        cartItemRepository.deleteAll(cartItem);
+    }
+
     private Cart getOrCreateCart(User user) {
         Cart cart = cartRepository.findByUser(user);
         if (cart == null) {
@@ -101,33 +130,6 @@ public class CartService {
         cartItemRepository.save(cartItem);
     }
 
-    @Transactional
-    public void deleteProductFromCart(User user, Long productId, long quantity) {
-        Cart cart = getCurrentUserCart(user);
-        Optional<CartItem> existingCartItem = findCartItemByProductId(cart, productId);
-
-        if (existingCartItem.isPresent()) {
-            CartItem cartItem = existingCartItem.get();
-            if (cartItem.getQuantity() <= quantity) {
-                cart.getCartItems().remove(cartItem);
-                cartItemRepository.delete(cartItem);
-            } else {
-                cartItem.setQuantity(cartItem.getQuantity() - quantity);
-                cartItemRepository.save(cartItem);
-            }
-            cartRepository.save(cart);
-        } else {
-            throw new NotFoundException("Product not found in cart.");
-        }
-    }
-
-    @Transactional
-    public void cleanCart(User user) {
-        Cart cart = getCurrentUserCart(user);
-        List<CartItem> cartItem = cartItemRepository.findByCart(cart);
-        cart.getCartItems().removeAll(cartItemRepository.findByCart(cart));
-        cartItemRepository.deleteAll(cartItem);
-    }
 
 }
 

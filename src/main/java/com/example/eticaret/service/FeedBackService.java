@@ -33,21 +33,9 @@ public class FeedBackService {
                 .collect(Collectors.toList());
     }
 
-    private FeedBack createFeedBack(User user, Payment payment) {
-        FeedBack newFeedBack = new FeedBack();
-        newFeedBack.setUser(user);
-        newFeedBack.setProduct(payment.getProduct());
-        newFeedBack.setPayment(payment);
-        newFeedBack.setRating(3);
-        return feedBackRepository.save(newFeedBack);
-    }
-
     @Transactional
     public void setFeedBack(User user, FeedBackDto feedBackDto, long paymentId) {
         Payment payment = paymentRepository.findById(paymentId);
-        if (payment == null) {
-            throw new NotFoundException("Payment not found with id: " + paymentId);
-        }
         FeedBack feedBack = feedBackRepository.findByPaymentId(paymentId);
         if (feedBack != null) {
             throw new FeedBackException("You have already added a feedBack");
@@ -60,6 +48,40 @@ public class FeedBackService {
 
             setAverageRating(newFeedBack.getProduct().getId());
         }
+    }
+
+    @Transactional
+    public void updateFeedBack(User user, FeedBackDto feedBackDto, long paymentId) {
+        FeedBack feedBack = feedBackRepository.findByPaymentIdAndUser(paymentId,user);
+        if (feedBack == null) {
+            throw new NotFoundException("There is no FeedBack with product_id " + feedBackDto.getProductId());
+        } else {
+            feedBack.setRating(feedBackDto.getRating());
+            feedBack.setComment(feedBackDto.getComment());
+            feedBackRepository.save(feedBack);
+            setAverageRating(feedBack.getProduct().getId());
+        }
+    }
+
+    public void deleteFeedBackComment(long feedBackId) {
+        FeedBack feedBack = feedBackRepository.findById(feedBackId)
+                .orElseThrow(() -> new NotFoundException("There is no FeedBack this id: " + feedBackId));
+        feedBack.setComment(null);
+    }
+
+    public void deleteFeedBack(long feedBackId) {
+        FeedBack feedBack = feedBackRepository.findById(feedBackId)
+                .orElseThrow(() -> new NotFoundException("There is no FeedBack this id: " + feedBackId));
+        feedBackRepository.delete(feedBack);
+    }
+
+    private FeedBack createFeedBack(User user, Payment payment) {
+        FeedBack newFeedBack = new FeedBack();
+        newFeedBack.setUser(user);
+        newFeedBack.setProduct(payment.getProduct());
+        newFeedBack.setPayment(payment);
+        newFeedBack.setRating(3);
+        return feedBackRepository.save(newFeedBack);
     }
 
     private void setAverageRating(long productId) {

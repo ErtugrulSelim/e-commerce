@@ -22,4 +22,6 @@ public interface FeedBackRepository extends JpaRepository<FeedBack, Long> {
     FeedBack findByPaymentId(long paymentId);
 
     List<FeedBack> findByProduct_Id(long productId);
+
+    FeedBack findByPaymentIdAndUser(long paymentId, User user);
 }

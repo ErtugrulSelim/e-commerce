@@ -54,31 +54,6 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
-    public List<PaymentDto> getPendingPayments(User user) {
-        List<PaymentDto> paymentDto = getPayments(user);
-        return paymentDto.stream()
-                .filter(payment -> !payment.isSuccess())
-                .collect(Collectors.toList());
-    }
-
-    private Boolean pendingStateOfPays(long productId, Cart cart) {
-        return paymentRepository
-                .findByCart(cart)
-                .stream()
-                .anyMatch(p -> p.getProduct().getId() == productId && !p.isSuccess());
-    }
-
-    private void createPayment(long quantity, Cart cart, Product product) {
-        Payment payment = new Payment();
-        payment.setProduct(product);
-        payment.setQuantity(quantity);
-        payment.setCart(cart);
-        payment.setSuccess(false);
-        payment.setUser(cart.getUser());
-        paymentRepository.save(payment);
-    }
-
-
     @Transactional
     public void getPayProductRequest(User user, long productId, int quantity) {
         Cart cart = getCurrentUserCart(user);
@@ -178,6 +153,30 @@ public class PaymentService {
             throw new NotFoundException("There are no pending payments in the cart.");
         }
         paymentRepository.deleteAll(pendingPayments);
+    }
+
+    public List<PaymentDto> getPendingPayments(User user) {
+        List<PaymentDto> paymentDto = getPayments(user);
+        return paymentDto.stream()
+                .filter(payment -> !payment.isSuccess())
+                .collect(Collectors.toList());
+    }
+
+    private Boolean pendingStateOfPays(long productId, Cart cart) {
+        return paymentRepository
+                .findByCart(cart)
+                .stream()
+                .anyMatch(p -> p.getProduct().getId() == productId && !p.isSuccess());
+    }
+
+    private void createPayment(long quantity, Cart cart, Product product) {
+        Payment payment = new Payment();
+        payment.setProduct(product);
+        payment.setQuantity(quantity);
+        payment.setCart(cart);
+        payment.setSuccess(false);
+        payment.setUser(cart.getUser());
+        paymentRepository.save(payment);
     }
 }
 

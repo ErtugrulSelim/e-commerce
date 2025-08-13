@@ -55,7 +55,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/products", "/api/products/{category}").hasRole("USER")
                         .requestMatchers("/api/card/**").hasRole("USER")
                         .requestMatchers("/api/payment/**").hasRole("USER")
-                        .requestMatchers("/api/mail/send").permitAll()
                         .requestMatchers("/api/feedBack/comments/**").hasRole("USER")
                         .anyRequest().authenticated()
                 ).sessionManagement(session ->

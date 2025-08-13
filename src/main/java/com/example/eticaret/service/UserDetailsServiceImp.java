@@ -24,8 +24,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         } else {
             userOpt = userRepository.findByUsername(identifier);
         }
-        User user = userOpt.orElseThrow(() ->
+        return userOpt.orElseThrow(() ->
                 new UsernameNotFoundException("User not found with username or email: " + identifier));
-        return user;
     }
 }

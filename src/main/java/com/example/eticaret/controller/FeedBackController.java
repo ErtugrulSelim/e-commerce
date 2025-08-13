@@ -20,22 +20,42 @@ public class FeedBackController {
     public FeedBackController(FeedBackService feedBackService) {
         this.feedBackService = feedBackService;
     }
+
     @GetMapping("/comments/{productId}")
-    public ResponseEntity<List<String>> getFeedBackComments(@PathVariable long productId) {
-        return ResponseEntity.ok(feedBackService.getFeedBackComments(productId));
+    public List<String> getFeedBackComments(@PathVariable long productId) {
+        return feedBackService.getFeedBackComments(productId);
     }
 
     @GetMapping("/ratings/{productId}")
-    public ResponseEntity<Float> getFeedBackRatings(@PathVariable long productId) {
-        return ResponseEntity.ok(feedBackService.getFeedBackRating(productId));
+    public Float getFeedBackRatings(@PathVariable long productId) {
+        return feedBackService.getFeedBackRating(productId);
     }
 
-    @PostMapping("/add{paymentId}")
+    @PostMapping("/add/{paymentId}")
     public ResponseEntity<String> addFeedBack(@Valid @AuthenticationPrincipal User user,
-                                              @RequestParam long paymentId,
-                                              @RequestBody FeedBackDto feedBackdto)
-            {
+                                              @PathVariable long paymentId,
+                                              @RequestBody FeedBackDto feedBackdto) {
         feedBackService.setFeedBack(user, feedBackdto, paymentId);
-        return  ResponseEntity.ok("FeedBack added");
+        return ResponseEntity.ok("FeedBack added");
+    }
+
+    @DeleteMapping("/delete-comment/{feedBackId}")
+    public ResponseEntity<String> deleteFeedBackComment(@AuthenticationPrincipal @PathVariable long feedBackId) {
+        feedBackService.deleteFeedBackComment(feedBackId);
+        return ResponseEntity.ok("Comment deleted");
+    }
+
+    @DeleteMapping("/delete/{feedBackId}")
+    public ResponseEntity<String> deleteFeedBack(@AuthenticationPrincipal @PathVariable long feedBackId) {
+        feedBackService.deleteFeedBack(feedBackId);
+        return ResponseEntity.ok("FeedBack deleted");
+    }
+
+    @PostMapping("/update/{paymentId}")
+    public ResponseEntity<String> updateFeedBack(@Valid @AuthenticationPrincipal User user,
+                                                 @PathVariable long paymentId,
+                                                 @RequestBody FeedBackDto feedBackDto) {
+        feedBackService.updateFeedBack(user, feedBackDto, paymentId);
+        return ResponseEntity.ok("FeedBack updated");
     }
 }

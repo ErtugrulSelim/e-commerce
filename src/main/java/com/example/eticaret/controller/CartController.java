@@ -29,11 +29,11 @@ public class CartController {
     public ResponseEntity<String> addToCart(@Valid @AuthenticationPrincipal User user,
                                             @RequestParam long productId, @RequestParam int quantity) {
         cartService.addToCart(user, productId, quantity);
-        return ResponseEntity.ok("Successfully added to cart");
+        return ResponseEntity.ok("Successfully added to cart.");
     }
 
     @DeleteMapping("/delete-product")
-    public ResponseEntity<String> deleteProductfromCart(@Valid @AuthenticationPrincipal User user,
+    public ResponseEntity<String> deleteProductFromCart(@Valid @AuthenticationPrincipal User user,
                                                         @RequestParam long productId, @RequestParam int quantity) {
         cartService.deleteProductFromCart(user, productId, quantity);
         return ResponseEntity.ok("Cart deleted");
@@ -42,7 +42,7 @@ public class CartController {
     @DeleteMapping("/clean-cart")
     public ResponseEntity<String> cleanCart(@Valid @AuthenticationPrincipal User user) {
         cartService.cleanCart(user);
-        return ResponseEntity.ok("Cart cleaned");
+        return ResponseEntity.ok("Cart cleaned.");
     }
 
 }

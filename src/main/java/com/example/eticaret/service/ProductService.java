@@ -7,6 +7,7 @@ import com.example.eticaret.exceptions.NotFoundException;
 import com.example.eticaret.model.Product;
 import com.example.eticaret.repository.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,12 +53,13 @@ public class ProductService {
                 product.getCategory().equals(category)).collect(Collectors.toList());
     }
 
-    public Product addProduct(Product product) {
+    public ResponseEntity<String> addProduct(Product product) {
         Optional<Product> newProduct = productRepository.findById(product.getId());
         if (newProduct.isPresent()) {
             throw new AlreadyExistException("This product already exists");
         }
-        return productRepository.save(product);
+        productRepository.save(product);
+        return ResponseEntity.ok("Product added successfully");
     }
 
     public void deleteProduct(Long productId) {
@@ -66,11 +68,12 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public Product updateProduct(Product product) {
+    public ResponseEntity<String> updateProduct(Product product) {
         Optional<Product> newProduct = productRepository.findById(product.getId());
         if (newProduct.isPresent()) {
             product.setStock(newProduct.get().getStock() + product.getStock());
-            return productRepository.save(product);
+            productRepository.save(product);
+            return ResponseEntity.ok("Product updated successfully");
         } else {
             throw new NotFoundException("Product not found");
         }
