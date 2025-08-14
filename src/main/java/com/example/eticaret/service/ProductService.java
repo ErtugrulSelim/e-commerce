@@ -54,8 +54,8 @@ public class ProductService {
     }
 
     public ResponseEntity<String> addProduct(Product product) {
-        Optional<Product> newProduct = productRepository.findById(product.getId());
-        if (newProduct.isPresent()) {
+        Optional<Product> existingProduct = productRepository.findByName(product.getName());
+        if (existingProduct.isPresent()) {
             throw new AlreadyExistException("This product already exists");
         }
         productRepository.save(product);

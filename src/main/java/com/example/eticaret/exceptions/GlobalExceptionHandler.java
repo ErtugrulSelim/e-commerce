@@ -79,8 +79,8 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
-    @ExceptionHandler({FeedBackException.class})
-    public ResponseEntity<String> handleFeedBackException(FeedBackException e) {
+    @ExceptionHandler({FeedbackException.class})
+    public ResponseEntity<String> handleFeedBackException(FeedbackException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
